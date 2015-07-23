@@ -1,0 +1,21 @@
+@import "jeet/index";
+
+.welcome {
+	@include align(direction=both);
+	text-align: center;
+
+
+	.logoSvg {
+		@include center(150px);
+		img {
+			width: 100%;
+		}
+	}
+
+	.tagLine {
+		text-align: center;
+		font-weight: 100;
+		font-size: 40px;
+	}
+}
+

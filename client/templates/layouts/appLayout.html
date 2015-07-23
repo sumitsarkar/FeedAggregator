@@ -1,0 +1,12 @@
+<template name="appLayout">
+
+<!-- Do we need a sidebar ? -->
+
+<!-- Let's just make a dummy page for now -->
+
+{{#unless currentUser}}
+<div class="content">
+	{{> Template.dynamic template=body}}
+</div>
+{{/unless}}
+</template>
