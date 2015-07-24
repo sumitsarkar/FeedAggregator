@@ -1,5 +1,49 @@
 <template name="sidebar">
 	<div class="sidebar">
+		<div class="header">
+			<div class="logoSvg">
+				<img src="/logo.svg">
+			</div>
+		</div>
+		<div class="ui divider"></div>
+
+
 		
+
+		<div class="channelContainer">
+			<h4>Channels</h4>
+
+
+			<!-- This is where we'll list the channels the user is subscribed to -->
+			<!-- The rendering will be done based on the template level subscription. Since this template will be common across the entire app, template-level subscription makes sense -->
+
+
+			<div class="ui middle aligned selection list channelList js-channelList">
+				<div class="item">
+					<div class="content">
+						#tympanus
+						<div class="ui olive horizontal circular label">22</div>
+					</div>
+				</div>
+				<div class="item">
+					<div class="content">
+						#css-tricks
+						<div class="ui olive horizontal circular label">3</div>
+					</div>
+				</div>
+				<div class="item">
+					<div class="content">
+						#east5
+						<div class="ui olive horizontal circular label">5</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<footer>
+			<div class="ui divider"></div>
+			<button class="ui basic button tiny js-logout">Logout</button>
+		</footer>
 	</div>
 </template>
