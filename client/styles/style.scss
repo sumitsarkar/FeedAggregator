@@ -1,5 +1,11 @@
 @import "jeet/index";
 
+$primary-color: #303E4D;
+
+.loading {
+	@include align(direction=both);
+}
+
 .welcome {
 	@include align(direction=both);
 	text-align: center;
@@ -19,3 +25,13 @@
 	}
 }
 
+.sidebar {
+	@include column(1/5);
+	position: absolute;
+	height: 100%;
+	background: $primary-color;
+}
+
+.appContent {
+	@include column(4/5, $offset:1/5);
+}

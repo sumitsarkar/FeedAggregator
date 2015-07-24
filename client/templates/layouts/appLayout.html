@@ -1,12 +1,18 @@
 <template name="appLayout">
 
-<!-- Do we need a sidebar ? -->
+<!-- Do we really need a sidebar ? -->
+	{{#if currentUser}}
+		{{> Template.dynamic template=sidebar}}
+		{{> Template.dynamic template=appContent}}
+	{{else}}
+		{{#if loggingIn}}
+			{{> loading}}
+		{{else}}
+			{{> welcome}}
+		{{/if}}
+	{{/if}}
 
 <!-- Let's just make a dummy page for now -->
 
-{{#unless currentUser}}
-<div class="content">
-	{{> Template.dynamic template=body}}
-</div>
-{{/unless}}
+
 </template>

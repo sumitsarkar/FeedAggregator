@@ -4,6 +4,7 @@ FlowRouter.route('/', {
 
 	},
 	action:function(){
-		FlowLayout.render('appLayout', {body: 'welcome'})
+		FlowLayout.render('appLayout', {sidebar: 'sidebar', appContent: 'appContent'});
 	}
-})
+});
+
