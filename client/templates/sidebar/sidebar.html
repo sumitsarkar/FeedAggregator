@@ -11,7 +11,10 @@
 		
 
 		<div class="channelContainer">
-			<h4>Channels</h4>
+			
+			<h4>
+				Channels <button class="ui inverted supermini orange icon button circular addChannel js-addChannel"><i class="icon add"></i></button>
+			</h4>
 
 
 			<!-- This is where we'll list the channels the user is subscribed to -->
@@ -22,19 +25,19 @@
 				<div class="item">
 					<div class="content">
 						#tympanus
-						<div class="ui olive horizontal circular label">22</div>
+						<div class="ui orange horizontal circular tiny label">22</div>
 					</div>
 				</div>
 				<div class="item">
 					<div class="content">
 						#css-tricks
-						<div class="ui olive horizontal circular label">3</div>
+						<div class="ui orange horizontal circular tiny label">3</div>
 					</div>
 				</div>
 				<div class="item">
 					<div class="content">
 						#east5
-						<div class="ui olive horizontal circular label">5</div>
+						<div class="ui orange horizontal circular tiny label">5</div>
 					</div>
 				</div>
 			</div>
@@ -45,5 +48,37 @@
 			<div class="ui divider"></div>
 			<button class="ui basic button tiny js-logout">Logout</button>
 		</footer>
+
+		
+		<!-- Need to strategize how to move this form to a separate template and then render it -->
+		<!-- For the time being let's just make do with this -->
+		<form class="ui form modal small">
+			<i class="close icon"></i>
+			<div class="header">
+				Add new feed
+			</div>
+			<div class="content">
+				<div class="description">
+					<div class="field">
+						<label>Channel Name</label>
+						<input type="text" name="channel" placeholder="Channel Name">
+					</div>
+					<div class="field">
+						<label>RSS URL</label>
+						<input type="text" name="rss-url" placeholder="URL">
+					</div>
+				</div>
+			</div>
+			<div class="actions">
+				<button class="ui red basic button">
+					<i class="remove icon"></i>
+					Cancel
+				</button>
+				<button class="ui green basic button" type="submit">
+					<i class="checkmark icon"></i>
+					Submit
+				</button>
+			</div>
+		</form>
 	</div>
 </template>

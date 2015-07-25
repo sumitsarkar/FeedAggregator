@@ -1,0 +1,1 @@
+UserSubscriptions = new Mongo.Collection('userSubscriptions');
