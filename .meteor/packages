@@ -22,3 +22,4 @@ semantic:ui
 flemay:less-autoprefixer
 service-configuration
 aldeed:collection2
+momentjs:moment
