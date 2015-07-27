@@ -11,6 +11,17 @@ Process to follow:
 	b. If the `pubDate` differs, move to next step.
 4. Get the items. Match items with existing items if any. If `date` property varies, overwrite the existing articles with the new articles. Else move on.
 
+Alternative:
+
+Instead of pushing everything into the job queue, let's just move the first call to adding of a new feed to and asynchronous job. And let the user subscribe to the meta add and article collection. That would make things simpler.
+But do run a headless worker in the background to schedule feed updates.
+
+UserSubscriptions:
+{
+	_id:
+	userId:
+	feedId: []
+}
 
 Feed:
 {
