@@ -20,6 +20,8 @@ Template.sidebar.events({
 					}
 
 					// Call Meteor method to insert the document.
+					// 
+					// 
 				} else {
 					$(".js-rssUrl").parent().addClass('error');
 					return false;

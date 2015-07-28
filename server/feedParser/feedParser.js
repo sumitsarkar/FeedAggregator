@@ -18,11 +18,16 @@ We'll combine these two methods to minimize the HTTP call to one instead of two.
 
 */
 
+/******
+
+	Should we use Backbone style eventBus or should we user Future??
+
+*******/
 var FeedParser = Meteor.npmRequire('feedparser');
 var request = Meteor.npmRequire('request');
 var logger = Meteor.npmRequire('winston');
-eventBus = Meteor.npmRequire('events').EventEmitter;
-
+//EventEmitter = Meteor.npmRequire('events').EventEmitter;
+eventBus = new EventEmitter();
 
 var getFeeds = function() {
 	return Feeds.find({});
@@ -38,12 +43,14 @@ var updateFeeds = function() {
 	});
 };
 
-FetchFeed = function(feedUrl){
-	this.url = feedUrl;
-	this.req = request(this.url);
-	this.feedparser = new FeedParser({
+FetchFeed = function(feedUrl) {
+	var self = this;
+	self.url = feedUrl;
+	var req = request(self.url);
+	self.feedparser = new FeedParser({
 		addmeta: false
 	});
+
 
 	req.on('error', function(error) {
 		logger.error(error);
@@ -51,11 +58,10 @@ FetchFeed = function(feedUrl){
 
 	req.on('response', function(response) {
 		var stream = this;
-
-		if (response.statusCode != 200) 
+		if (response.statusCode != 200)
 			return this.emit('error', new Error('Bad ststus code'));
 
-		stream.pipe(feedparser);
+		stream.pipe(self.feedparser);
 	});
 
 	this.feedparser.on('error', function(error) {
@@ -66,7 +72,15 @@ FetchFeed = function(feedUrl){
 FetchFeed.prototype.fetchMeta = function() {
 	this.feedparser.on('meta', function() {
 		meta = this.meta;
-		eventBus.emit('metaDownloaded', {'meta': meta});
+		var newFeedMeta = {
+			title: meta.title,
+			description: meta.description,
+			link: meta.link,
+			xmlurl: meta.xmlurl,
+			date: meta.date,
+			pubdate: meta.pubdate
+		};
+		eventBus.emit('metaDownloaded', newFeedMeta);
 	});
 };
 
@@ -75,13 +89,13 @@ FetchFeed.prototype.fetchArticles = function() {
 		// This is where the action is
 		var stream = this;
 		var item;
-
-		while(item = stream.read()) {
-			// Pust each article into the db
-			console.log(item);	
+		while (item = stream.read()) {
+			// Push each article into the db
+			console.log(item);
 		}
 	});
 };
+
 
 
 /*
