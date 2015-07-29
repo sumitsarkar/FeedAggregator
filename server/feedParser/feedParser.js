@@ -26,6 +26,8 @@ We'll combine these two methods to minimize the HTTP call to one instead of two.
 var FeedParser = Meteor.npmRequire('feedparser');
 var request = Meteor.npmRequire('request');
 var logger = Meteor.npmRequire('winston');
+var Future = Meteor.npmRequire('fibers/future');
+
 //EventEmitter = Meteor.npmRequire('events').EventEmitter;
 eventBus = new EventEmitter();
 
@@ -70,6 +72,9 @@ FetchFeed = function(feedUrl) {
 };
 
 FetchFeed.prototype.fetchMeta = function() {
+
+	var future = new Future();
+
 	this.feedparser.on('meta', function() {
 		meta = this.meta;
 		var newFeedMeta = {
@@ -80,18 +85,35 @@ FetchFeed.prototype.fetchMeta = function() {
 			date: meta.date,
 			pubdate: meta.pubdate
 		};
-		eventBus.emit('metaDownloaded', newFeedMeta);
+		
+		future.return(newFeedMeta);
 	});
+
+	return future;
 };
 
-FetchFeed.prototype.fetchArticles = function() {
+FetchFeed.prototype.fetchArticles = function(feedId) {
 	this.feedparser.on('readable', function() {
 		// This is where the action is
 		var stream = this;
 		var item;
 		while (item = stream.read()) {
-			// Push each article into the db
-			console.log(item);
+			var article = {
+				feedId: feedId,
+				title: item.title,
+				description: item.description,
+				summary: item.summary,
+				link: item.link,
+				origlink: item.origlink,
+				date: item.date,
+				pubdate: item.pubdate,
+				author: item.author,
+				guid: item.guid
+			}
+			/*
+				Push each article into the db.
+			 */ 
+			console.log(article);
 		}
 	});
 };

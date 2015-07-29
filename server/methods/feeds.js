@@ -20,32 +20,20 @@ Meteor.methods({
 			// Make call to feedparser API to get metadata and articles.
 			var feedparser = new FetchFeed(feedObject.url);
 			
-			feedparser.fetchMeta();
-			console.log('meta lene ko bola');
+			var meta = feedparser.fetchMeta().wait();
 
-			eventBus.on('metaDownloaded', Meteor.bindEnvironment(function(meta) {
-				var feedId;
-				console.log('mil gaya re meta');
+			feedId = Feeds.insert(meta);
 
-				// Insert the feed meta into the Feeds collection
-				feedId = Feeds.insert(meta);
-
-				// Add the feedId to the UserSubscriptions collection
-				// 
-				// 
-				// 
-				
-				// Emit and event on the client eventBus to allow the user to subscribe to the feed 
-				// 
-				// 
-				// 
-			}, function() {
-				console.log('Failed to bind environment');
-			}));
-
-			return "ghanta";
+			// Should we start the article fetch too? :\ Let's do it for now. We'll find a better pattern later!
+			
+			feedparser.fetchArticles(feedId);
+			
 
 			// Update the object with the metadata and insert it into the collection.
+			// 
+			
+			// Return feedId to the client so it can subscribe to the publication.
+			return feedId;
 		} else {
 			// Do nothing. Subscribe user to the collection.
 
