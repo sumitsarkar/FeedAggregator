@@ -31,3 +31,13 @@ Template.sidebar.events({
 		.modal('show');
 	}
 });
+
+Template.sidebar.helpers({
+	isUserSubscriptionsReady: function(){
+		return Session.get("userSubscriptionsReady");
+	},
+
+	subscriptions: function() {
+		return UserSubscriptions.find({})
+	}
+})

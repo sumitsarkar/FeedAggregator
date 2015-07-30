@@ -6,8 +6,6 @@
 
 meteor-platform
 meteorhacks:npm
-meteorhacks:flow-router
-meteorhacks:flow-layout
 stevezhu:lodash
 fourseven:scss
 accounts-base
@@ -21,5 +19,6 @@ flemay:less-autoprefixer
 service-configuration
 aldeed:collection2
 momentjs:moment
-autopublish
 raix:eventemitter
+kadira:flow-router
+kadira:blaze-layout

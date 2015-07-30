@@ -20,12 +20,11 @@ We'll combine these two methods to minimize the HTTP call to one instead of two.
 
 /******
 
-	Should we use Backbone style eventBus or should we user Future??
+	We are using Futures for fetchMeta
 
 *******/
 var FeedParser = Meteor.npmRequire('feedparser');
 var request = Meteor.npmRequire('request');
-var logger = Meteor.npmRequire('winston');
 var Future = Meteor.npmRequire('fibers/future');
 
 //EventEmitter = Meteor.npmRequire('events').EventEmitter;
@@ -92,7 +91,11 @@ FetchFeed.prototype.fetchMeta = function() {
 	return future;
 };
 
-FetchFeed.prototype.fetchArticles = function(feedId) {
+FetchFeed.prototype.fetchArticles = function(feedId, CollectionMethod) {
+	var meteorBindedMethod = Meteor.bindEnvironment(function(article, CollectionMethod) {
+		Meteor.call(CollectionMethod, article, function(err, res){});
+	}, "Failed to bindEnvironment");
+
 	this.feedparser.on('readable', function() {
 		// This is where the action is
 		var stream = this;
@@ -110,10 +113,8 @@ FetchFeed.prototype.fetchArticles = function(feedId) {
 				author: item.author,
 				guid: item.guid
 			}
-			/*
-				Push each article into the db.
-			 */ 
-			console.log(article);
+			//	Call method for inserting the article
+			meteorBindedMethod(article, CollectionMethod);
 		}
 	});
 };

@@ -6,7 +6,7 @@ Schemas.UserSubscription = new SimpleSchema({
 	userId: {
 		type: String
 	},
-	feedId: {
+	feeds: {
 		type: [String]
 	}
 });

@@ -12,7 +12,7 @@ Meteor.methods({
 		 */
 
 		var feed = Feeds.findOne({
-			xmlurl: feedObject.url
+			xmlurl: feedObject.url.split('?')[0]
 		});
 
 		// Check for existent feed
@@ -20,23 +20,23 @@ Meteor.methods({
 			// Make call to feedparser API to get metadata and articles.
 			var feedparser = new FetchFeed(feedObject.url);
 			
+			// Non blocking call to get metadata
 			var meta = feedparser.fetchMeta().wait();
 
+			// Insert it into the collection.
 			feedId = Feeds.insert(meta);
 
 			// Should we start the article fetch too? :\ Let's do it for now. We'll find a better pattern later!
+			feedparser.fetchArticles(feedId, "feedsArticles_insert");
 			
-			feedparser.fetchArticles(feedId);
-			
-
-			// Update the object with the metadata and insert it into the collection.
-			// 
+			// Update the UserSubscriptions collections as well
+			Meteor.call("userSubscriptions_insert", feedId);
 			
 			// Return feedId to the client so it can subscribe to the publication.
 			return feedId;
 		} else {
 			// Do nothing. Subscribe user to the collection.
-
+			Meteor.call("userSubscriptions_insert", feed._id);
 			return "bhag sala. nahi hua";
 		}
 	}
