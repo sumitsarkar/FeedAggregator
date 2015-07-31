@@ -18,19 +18,18 @@
 
 
 			<!-- This is where we'll list the channels the user is subscribed to -->
-			<!-- The rendering will be done based on the template level subscription. Since this template will be common across the entire app, template-level subscription makes sense -->
-
-			<!--<div class="ui middle aligned selection list channelList js-channelList">
-				{{#if isUserSubscriptionsReady}}
-					{{#each}}
-				<div class="item">
-					<div class="content">
-						#{{}}
-						<div class="ui orange horizontal circular tiny label">22</div>
+			<div class="ui middle aligned selection list channelList js-channelList">
+				{{#if isFeedsReady}}
+					{{#each feeds}}
+					<div class="item">
+						<div class="content">
+							#{{title}}
+							<!--<div class="ui orange horizontal circular tiny label">22</div>-->
+						</div>
 					</div>
-				</div>
+					{{/each}}
 				{{/if}}
-			</div>-->
+			</div>
 
 			
 		</div>

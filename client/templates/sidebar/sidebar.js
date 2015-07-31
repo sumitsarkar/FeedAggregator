@@ -20,8 +20,9 @@ Template.sidebar.events({
 					}
 
 					// Call Meteor method to insert the document.
-					// 
-					// 
+					Meteor.call("feeds_addFeed", feedObject, function(err, result) {
+						// Catch error here/Log it.
+					});
 				} else {
 					$(".js-rssUrl").parent().addClass('error');
 					return false;
@@ -33,11 +34,15 @@ Template.sidebar.events({
 });
 
 Template.sidebar.helpers({
-	isUserSubscriptionsReady: function(){
-		return Session.get("userSubscriptionsReady");
+	isFeedsReady: function(){
+		return Session.get("feedsReady");
 	},
 
 	subscriptions: function() {
-		return UserSubscriptions.find({})
+		return UserSubscriptions.find({});
+	},
+
+	feeds: function() {
+		return Feeds.find({});
 	}
 })
