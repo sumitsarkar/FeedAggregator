@@ -44,10 +44,31 @@ var updateFeeds = function() {
 	});
 };
 
+
+var getParams = function(str) {
+  var params = str.split(';').reduce(function (params, param) {
+    var parts = param.split('=').map(function (part) { return part.trim(); });
+    if (parts.length === 2) {
+      params[parts[0]] = parts[1];
+    }
+    return params;
+  }, {});
+  return params;
+};
+
 FetchFeed = function(feedUrl) {
 	var self = this;
 	self.url = feedUrl;
-	var req = request(self.url);
+	var req = request(self.url, {
+		timeout: 10000,
+		pool: false
+	});
+	req.setMaxListeners(50);
+	
+	// Some feeds do not respond without user-agent and accept headers.
+	req.setHeader('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36');
+	req.setHeader('accept', 'text/html,application/xhtml+xml');
+
 	self.feedparser = new FeedParser({
 		addmeta: false
 	});
@@ -60,7 +81,15 @@ FetchFeed = function(feedUrl) {
 	req.on('response', function(response) {
 		var stream = this;
 		if (response.statusCode != 200)
-			return this.emit('error', new Error('Bad ststus code'));
+			return this.emit('error', new Error('Bad status code'));
+
+		/*
+			We'll need Iconv package for translating a different charset.
+			We'll use it for internationalization later along the development.
+
+			var charset = getParams(response.headers['content-type'] || '').charset;
+		 */
+		
 
 		stream.pipe(self.feedparser);
 	});
@@ -84,7 +113,7 @@ FetchFeed.prototype.fetchMeta = function() {
 			date: meta.date,
 			pubdate: meta.pubdate
 		};
-		
+
 		future.return(newFeedMeta);
 	});
 
@@ -93,7 +122,7 @@ FetchFeed.prototype.fetchMeta = function() {
 
 FetchFeed.prototype.fetchArticles = function(feedId, CollectionMethod) {
 	var meteorBindedMethod = Meteor.bindEnvironment(function(article, CollectionMethod) {
-		Meteor.call(CollectionMethod, article, function(err, res){});
+		Meteor.call(CollectionMethod, article, function(err, res) {});
 	}, "Failed to bindEnvironment");
 
 	this.feedparser.on('readable', function() {
@@ -102,18 +131,18 @@ FetchFeed.prototype.fetchArticles = function(feedId, CollectionMethod) {
 		var item;
 		while (item = stream.read()) {
 			var article = {
-				feedId: feedId,
-				title: item.title,
-				description: item.description,
-				summary: item.summary,
-				link: item.link,
-				origlink: item.origlink,
-				date: item.date,
-				pubdate: item.pubdate,
-				author: item.author,
-				guid: item.guid
-			}
-			//	Call method for inserting the article
+					feedId: feedId,
+					title: item.title,
+					description: item.description,
+					summary: item.summary,
+					link: item.link,
+					origlink: item.origlink,
+					date: item.date,
+					pubdate: item.pubdate,
+					author: item.author,
+					guid: item.guid
+				}
+				//	Call method for inserting the article
 			meteorBindedMethod(article, CollectionMethod);
 		}
 	});

@@ -72,7 +72,7 @@
           "version": "0.6.1"
         },
         "form-data": {
-          "version": "1.0.0-rc2",
+          "version": "1.0.0-rc3",
           "dependencies": {
             "async": {
               "version": "1.4.0"
@@ -83,10 +83,10 @@
           "version": "5.0.1"
         },
         "mime-types": {
-          "version": "2.1.3",
+          "version": "2.1.4",
           "dependencies": {
             "mime-db": {
-              "version": "1.15.0"
+              "version": "1.16.0"
             }
           }
         },
@@ -198,7 +198,7 @@
               }
             },
             "is-my-json-valid": {
-              "version": "2.12.0",
+              "version": "2.12.1",
               "dependencies": {
                 "generate-function": {
                   "version": "2.0.0"
