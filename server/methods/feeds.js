@@ -15,29 +15,26 @@ Meteor.methods({
 			xmlurl: feedObject.url.split('?')[0]
 		});
 
+		var sub = UserSubscriptions.findOne({
+			userId: Meteor.userId()
+		});
+
 		// Check for existent feed
 		if (!feed) {
 			// Make call to feedparser API to get metadata and articles.
-			var feedparser = new FetchFeed(feedObject.url);
+			try {
+				var feedObj = feedParser(feedObject.url).wait();
+				return feedObj;
+			} catch (e) {
+				throw new Meteor.Error("Your URL caused an error.", "Please check if it's a valid RSS feed.");
+			}
 			
-			// Non blocking call to get metadata
-			var meta = feedparser.fetchMeta().wait();
-
-			// Insert it into the collection.
-			feedId = Feeds.insert(meta);
-
-			// Should we start the article fetch too? :\ Let's do it for now. We'll find a better pattern later!
-			feedparser.fetchArticles(feedId, "feedsArticles_insert");
-			
-			// Update the UserSubscriptions collections as well
-			Meteor.call("userSubscriptions_insert", feedId);
-			
-			// Return feedId to the client so it can subscribe to the publication.
-			return feedId;
-		} else {
+		} else if (sub.feeds.indexOf(feed._id) === -1 ){
 			// Do nothing. Subscribe user to the collection.
 			Meteor.call("userSubscriptions_insert", feed._id);
-			return "bhag sala. nahi hua";
+			return {feedId: feed._id, duplicate: false};
+		} else{
+			return {feedId: feed._id, duplicate: true};
 		}
 	}
 })

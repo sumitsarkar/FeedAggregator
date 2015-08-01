@@ -5,15 +5,12 @@
 Meteor.startup(function() {
 	Session.set('userSubscriptionsReady', false);
 	Session.set("feedsReady", false);
-});
-
-
-Accounts.onLogin(function(err, user) {
+	
 	Meteor.subscribe("userSubscriptions", function() {
 		Session.set("userSubscriptionsReady", true);
 	});
 
 	Meteor.subscribe("feeds", function() {
 		Session.set("feedsReady", true);
-	})
+	});
 });

@@ -1,6 +1,7 @@
 Meteor.publish("userSubscriptions", function() {
 	var userId = this.userId;
-	return UserSubscriptions.find({userId: userId});
+	if (userId)
+		return UserSubscriptions.find({userId: userId});
 });
 
 
@@ -11,6 +12,9 @@ Meteor.publish("feeds", function() {
 	var sub = this;
 	var userId = this.userId;
 	var userSubscriptionsHandle;
+
+	if (!userId)
+		return ;
 	
 	function publishFeeds(feeds) {
 		var feedCursor = Feeds.find({_id: {$in: feeds}});;
@@ -19,8 +23,9 @@ Meteor.publish("feeds", function() {
 
 
 	// Publish feeds when user first opens the app.
-	var feeds = UserSubscriptions.findOne({userId: userId}).feeds;
-	publishFeeds(feeds);
+	var userSubsObject = UserSubscriptions.findOne({userId: userId});
+	if (userSubsObject.feeds)
+		publishFeeds(userSubsObject.feeds);
 
 
 	userSubscriptionsHandle = UserSubscriptions.find({userId: userId}).observeChanges({
@@ -31,4 +36,15 @@ Meteor.publish("feeds", function() {
 	});
 
 	sub.ready();
+});
+
+/*
+	Publication for articles
+*/
+
+Meteor.publish('feedsArticles', function(feedId) {
+	var userId = this.userId;
+	var subs = UserSubscriptions.findOne({userId: userId}).feeds;
+	if (subs.indexOf(feedId) > -1)
+		return FeedsArticles.find({feedId: feedId});
 });

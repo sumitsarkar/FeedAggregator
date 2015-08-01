@@ -1,5 +1,5 @@
 Template.sidebar.events({
-	"click .js-logout" : function(event) {
+	"click .js-logout": function(event) {
 		event.preventDefault();
 		Meteor.logout();
 	},
@@ -10,31 +10,37 @@ Template.sidebar.events({
 		event.preventDefault();
 		$(".js-rssUrl").parent().removeClass('error')
 		$('.ui.modal').modal({
-			closable: false,
-			blurring: true,
-			onApprove: function() {
-				var userInput = $(".js-rssUrl").val();
-				if (validateUrl(userInput)) {
-					var feedObject = {
-						url: userInput
+				closable: false,
+				blurring: true,
+				onApprove: function() {
+					var userInput = $(".js-rssUrl").val();
+					if (validateUrl(userInput)) {
+						var feedObject = {
+							url: userInput
+						}
+						console.log(feedObject);
+						// Call Meteor method to insert the document.
+						Meteor.call("feeds_addFeed", feedObject, function(err, result) {
+							// Catch error here/Log it.
+							if (err)
+								toastr.error(err.reason, err.error);
+							else if (result.duplicate === true)
+								toastr.warning("Please DO NOT add duplicate feed.", "Duplicate Feed");
+							else
+								toastr.success("Feed added.", "Success")
+						});
+					} else {
+						$(".js-rssUrl").parent().addClass('error');
+						return false;
 					}
-
-					// Call Meteor method to insert the document.
-					Meteor.call("feeds_addFeed", feedObject, function(err, result) {
-						// Catch error here/Log it.
-					});
-				} else {
-					$(".js-rssUrl").parent().addClass('error');
-					return false;
-				}				
-			}
-		})
-		.modal('show');
+				}
+			})
+			.modal('show');
 	}
 });
 
 Template.sidebar.helpers({
-	isFeedsReady: function(){
+	isFeedsReady: function() {
 		return Session.get("feedsReady");
 	},
 
