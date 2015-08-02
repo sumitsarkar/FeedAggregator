@@ -22,6 +22,6 @@ raix:eventemitter
 kadira:flow-router
 kadira:blaze-layout
 kadira:debug
-sumit:toastr
 msavin:mongol
 semantic:ui
+sumit:toastr

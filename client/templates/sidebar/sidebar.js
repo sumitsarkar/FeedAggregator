@@ -9,33 +9,41 @@ Template.sidebar.events({
 	"click .js-addChannel": function(event) {
 		event.preventDefault();
 		$(".js-rssUrl").parent().removeClass('error')
-		$('.ui.modal').modal({
-				closable: false,
-				blurring: true,
-				onApprove: function() {
-					var userInput = $(".js-rssUrl").val();
-					if (validateUrl(userInput)) {
-						var feedObject = {
-							url: userInput
-						}
-						console.log(feedObject);
-						// Call Meteor method to insert the document.
-						Meteor.call("feeds_addFeed", feedObject, function(err, result) {
-							// Catch error here/Log it.
-							if (err)
-								toastr.error(err.reason, err.error);
-							else if (result.duplicate === true)
-								toastr.warning("Please DO NOT add duplicate feed.", "Duplicate Feed");
-							else
-								toastr.success("Feed added.", "Success")
-						});
-					} else {
-						$(".js-rssUrl").parent().addClass('error');
-						return false;
-					}
+		vex.dialog.open({
+			message: 'Add a new feed:',
+			input: '<input type="url" name="url" class="js-rssUrl" placeholder="URL" required />\n',
+			buttons: [
+				$.extend({}, vex.dialog.buttons.YES, {
+					text: 'Submit'
+				}), $.extend({}, vex.dialog.buttons.NO, {
+					text: 'Back'
+				})
+			],
+			callback: function(data) {
+				if (data === false) {
+					return null;
 				}
-			})
-			.modal('show');
+
+				if (!validateUrl(data.url)){
+					toastr.error("Please type a valid url.", "Invalid URL");
+					return null;
+				}
+				else {
+					Meteor.call("feeds_addFeed", data, function(err, result) {
+						if (err) {
+							toastr.error("Please type a valid url.", "Invalid URL");
+							return;
+						}
+
+						if (result.duplicate === true) {
+							toastr.warning("Please don't add duplicate feeds.", "Duplicate feed");
+						} else if (result.duplicate === false) {
+							toastr.success("Feed Added to your subscriptions.", "Success");
+						}
+					})
+				}
+			}
+		});
 	}
 });
 

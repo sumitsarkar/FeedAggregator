@@ -7,6 +7,12 @@ FlowRouter.route('/', {
 	}
 });
 
+FlowRouter.route('/channels/:feedId', {
+	action: function() {
+		BlazeLayout.render('appLayout', {sidebar: 'sidebar', appContent: 'appContent', header: 'header', body: 'articleList'});
+	}
+});
+
 /*
 FlowRouter.route('/new', {
 	middlewares: [],

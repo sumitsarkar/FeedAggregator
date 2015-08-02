@@ -21,12 +21,12 @@
 			<div class="ui middle aligned selection list channelList js-channelList">
 				{{#if isFeedsReady}}
 					{{#each feeds}}
-					<div class="item">
+					<a href="/channels/{{_id}}" class="item">
 						<div class="content">
 							#{{title}}
 							<!--<div class="ui orange horizontal circular tiny label">22</div>-->
 						</div>
-					</div>
+					</a>
 					{{/each}}
 				{{/if}}
 			</div>
@@ -43,7 +43,7 @@
 		
 		<!-- Need to strategize how to move this form to a separate template and then render it -->
 		<!-- For the time being let's just make do with this -->
-		<div class="ui form modal small js-newFeed" >
+		<!--<div class="ui form modal small js-newFeed" >
 			<i class="close icon"></i>
 			<div class="header">
 				Add new feed
@@ -66,6 +66,6 @@
 					Submit
 				</button>
 			</div>
-		</div>
+		</div>-->
 	</div>
 </template>

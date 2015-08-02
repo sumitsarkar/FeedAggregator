@@ -71,7 +71,7 @@ session@1.1.0
 spacebars@1.0.6
 spacebars-compiler@1.0.6
 stevezhu:lodash@3.9.3
-sumit:toastr@0.0.1
+sumit:toastr@2.1.0
 templating@1.1.1
 tracker@1.0.7
 twitter@1.1.4

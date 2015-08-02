@@ -28,7 +28,7 @@ $light-grey: lighten(#333333, 50%);
 
 .sidebar {
 	@include column(1/5);
-	position: absolute;
+	position: fixed;
 	height: 100%;
 	border-right: 1px solid lighten(#333333, 60%);
 	.header {
@@ -73,9 +73,22 @@ $light-grey: lighten(#333333, 50%);
 
 .appContent {
 	@include column(4/5, $offset:1/5);
+	.centeredContainer {
+		margin: 50px 50px 0px 10px;
+	}
 
-	.addForm {
-		@include center(400px);
+	.articleList {
+		img {
+			max-width: 100%;
+			height: auto;
+			margin-bottom: 1em;
+		}
 
+		.card .content .description{
+			text-overflow: ellipsis;
+		    height: 20.5em;
+		    /* white-space: nowrap; */
+		    overflow: hidden;
+		}
 	}
 }

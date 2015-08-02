@@ -1,5 +1,8 @@
 <template name="appContent">
 	<div class="appContent">
-		{{> Template.dynamic template=content}}
+		<div class="centeredContainer">
+			{{> Template.dynamic template=header}}
+			{{> Template.dynamic template=body}}
+		</div>
 	</div>
 </template>

@@ -1,0 +1,19 @@
+<template name="articleList">
+<div class="ui link cards articleList">
+	{{#each getArticlesList}}
+    <div class="card">
+        <div class="content">
+            <div class="header">{{title}}</div>
+            <div class="meta">
+                <a>{{getDateString date}}</a>
+            </div>
+        </div>
+        <div class="extra content">
+            <span class="right floated">
+            {{author}}
+            </span>
+        </div>
+    </div>
+    {{/each}}
+</div>
+</template>
