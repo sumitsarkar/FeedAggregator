@@ -21,7 +21,7 @@
 			<div class="ui middle aligned selection list channelList js-channelList">
 				{{#if isFeedsReady}}
 					{{#each feeds}}
-					<a href="/channels/{{_id}}" class="item">
+					<a href="/channels/{{_id}}" class="item js-channelItem {{isActive _id}}">
 						<div class="content">
 							#{{title}}
 							<!--<div class="ui orange horizontal circular tiny label">22</div>-->

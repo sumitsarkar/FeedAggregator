@@ -1,8 +1,5 @@
 @import "jeet/index";
 
-$primary-color: #303E4D;
-$light-grey: lighten(#333333, 50%);
-
 .loading {
 	@include align(direction=both);
 }

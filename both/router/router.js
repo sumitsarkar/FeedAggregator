@@ -13,6 +13,12 @@ FlowRouter.route('/channels/:feedId', {
 	}
 });
 
+FlowRouter.route('/channels/:feedId/:articleId', {
+	action: function() {
+		BlazeLayout.render('appLayout', {sidebar: 'sidebar', appContent: 'appContent', header: 'header', body: 'article'});
+	}
+});
+
 /*
 FlowRouter.route('/new', {
 	middlewares: [],

@@ -1,7 +1,7 @@
 <template name="articleList">
 <div class="ui link cards articleList">
 	{{#each getArticlesList}}
-    <div class="card">
+    <a href="/channels/{{feedId}}/{{_id}}" class="card">
         <div class="content">
             <div class="header">{{title}}</div>
             <div class="meta">
@@ -13,7 +13,7 @@
             {{author}}
             </span>
         </div>
-    </div>
+    </a>
     {{/each}}
 </div>
 </template>

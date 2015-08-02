@@ -44,6 +44,11 @@ Template.sidebar.events({
 				}
 			}
 		});
+	},
+
+	"click .js-channelItem": function(event) {
+		$(".js-channelItem").siblings().removeClass('active');
+		$(event.target).closest('a.js-channelItem').addClass('active');
 	}
 });
 
@@ -51,7 +56,13 @@ Template.sidebar.helpers({
 	isFeedsReady: function() {
 		return Session.get("feedsReady");
 	},
-
+	isActive: function(feedId) {
+		var feedIdParam = FlowRouter.getParam("feedId");
+		if (feedIdParam === feedId) {
+			return "active"
+		} 
+		return "";
+	},
 	subscriptions: function() {
 		return UserSubscriptions.find({});
 	},
