@@ -154,7 +154,7 @@ Article Styles
 	}
 
 	a {
-	    color: #4A4A4A;
+	    color: darken(#87ceeb, 30%);
 	    transition: color ease 0.3s;
 	}
 
@@ -205,8 +205,12 @@ Article Styles
 	}
 
 	img {
-		max-width: 80%;
+		display: block;
+		max-width: 100%;
 		height: auto;
+		margin: 2em auto;
+		box-shadow: 0 0 5px #444444;
+		border-radius: 5px;
 	}
 
 	hr {

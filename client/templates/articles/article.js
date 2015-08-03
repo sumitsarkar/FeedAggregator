@@ -34,6 +34,8 @@ Template.article.onRendered(function() {
  		
 	if (prettyPrint)
 		prettyPrint();
+
+	$("div.feedflare").remove();
 });
 
 Template.article.events({
