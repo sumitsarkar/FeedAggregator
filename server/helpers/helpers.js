@@ -20,3 +20,7 @@ checkExistingSubcription = function(feedId) {
 		return false
 	}
 }
+
+isSameDate = function(date1, date2) {
+	return moment(date1).isSame(date2);
+}

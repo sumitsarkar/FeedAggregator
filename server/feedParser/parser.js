@@ -90,7 +90,7 @@ feedParser = function(feedUrl, callback) {
 		stream = feedParser;
 
 		var result = fetchMeta(meta);
-		if (!!result.feedId){
+		if (!!result.feedId) {
 			while (item = stream.read()) {
 				var article = {
 					feedId: result.feedId,
@@ -114,3 +114,74 @@ feedParser = function(feedUrl, callback) {
 
 	return future;
 };
+
+
+feedUpdate = function() {
+	
+	// Get all the feeds from the `Feeds` Collection
+	var feeds = Feeds.find({});
+
+	var fetchMeta = _.once(function(meta, origMetaDate) {
+		var newFeedMeta = {
+			title: meta.title,
+			description: meta.description,
+			link: meta.link,
+			xmlurl: meta.xmlurl,
+			date: meta.date,
+			pubdate: meta.pubdate
+		};
+
+		// Check if dates are different. If the dates are different, then something has been changed. Then we can parse the rest of the feed. Else, we can just end the request right there.
+
+		if (isSameDate(newFeedMeta.date, origMetaDate)) {
+			// End the request right here
+			return false;
+		} else {
+			// Update the meta with the diff and patch it with the new meta and update the meta.
+			return true;
+		}
+
+	});
+
+	feeds.forEach(function(feed) {
+		// Create a request
+		var req = request(feed.xmlurl, {
+			timeout: 10000,
+			pool: false
+		});
+
+		// Create FeedParser instance
+		var feedParser = new FeedParser({
+			addMeta: false
+		});
+
+		// Set headers for the request. Some sites don't allow non-browsers to crawl the feed.
+		req.setHeader('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36')
+		req.setHeader('accept', 'text/html,application/xhtml+xml');
+
+		// Handle request error. We'll be logging it.
+		req.on('error', function(error) {
+			logger.error(error);
+		});
+
+
+		// Pipe the stream to the feedParser.
+		req.on('response', function(response) {
+			var stream = this;
+			if (response.statusCode != 200)
+				return this.emit('error', new Error('Bad status code'));
+			else
+				stream.pipe(feedParser);
+		});
+
+		// Handle feedParser error. We'll be logging it.
+		feedParser.on('error', function(error) {
+			logger.error(error);
+		});
+
+
+
+
+	});
+
+}

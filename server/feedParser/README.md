@@ -48,3 +48,31 @@ Article:
 	author:
 	guid:
 }
+
+
+## Updating Feeds
+
+The updation process is a little tricky. In order to make sure that the entire process is streamlined, we'll have to consider a number of scenarios: whether the feed meta has been updated or not, whether any of the articles has been updated, whether a new article has been published, etc. I am going to try to figure out the scenarios as I proceed with the code.
+
+```
+Loop through the list of feeds in the `Feeds` collection:
+
+1. Create a request for each feed and get the Last-modified. Use the http headers to create request only if the document has been modified since the previous `last-modified`. 
+Update: This will not work for feeds that are auto generated.
+
+2. If the feed has been updated, check the `date` next. Compare the new meta `date` with the old one. If it has been updated, go ahead to next step.
+
+3. Diff and patch the documents and update the feed meta in the `Feeds` collection.
+
+4. Start reading each feed object. Diff and patch the objects with existing feedArticles. If it's a new one, insert it as a new document.
+Note: Find articles using `guid` property of the article.
+
+End of loop
+
+Log the end of the task.
+
+
+```
+
+
+This turns out to be a synchronous task as a whole not utilizing the power of web workers. To fully consume that awesome power, we can instead push each req-diff-patch method as an individual task. Since, we don't need to return anything to the caller, this seems like an acceptable way.
