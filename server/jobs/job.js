@@ -14,7 +14,7 @@ var extend = function(child, parent) {
 	hasProp = {}.hasOwnProperty;
 
 
-/*
+
 this.UpdateFeedJob = (function(superClass) {
   extend(UpdateFeedJob, superClass);
 
@@ -34,4 +34,3 @@ this.UpdateFeedJob = (function(superClass) {
   return UpdateFeedJob;
 
 })(Job);
-*/

@@ -1,3 +1,19 @@
+var extend = function(child, parent) {
+		for (var key in parent) {
+			if (hasProp.call(parent, key)) child[key] = parent[key];
+		}
+
+		function ctor() {
+			this.constructor = child;
+		}
+		ctor.prototype = parent.prototype;
+		child.prototype = new ctor();
+		child.__super__ = parent.prototype;
+		return child;
+	},
+	hasProp = {}.hasOwnProperty;
+
+
 feedParser = function(feedUrl, callback) {
 	var FeedParser = Meteor.npmRequire('feedparser');
 	var request = Meteor.npmRequire('request');
@@ -116,12 +132,42 @@ feedParser = function(feedUrl, callback) {
 };
 
 
+/*
+
+The feedUpdate will itself be a job which will in trun add more jobs to the job queue to get the latest feeds, update old feeds etc.
+
+*/
+
+this.UpdateFeed = (function(superClass) {
+	extend(UpdateFeed, superClass);
+
+	function UpdateFeed() {
+		console.log('Chut');
+		return UpdateFeed.__super__.constructor.apply(this, arguments);
+	}
+
+	UpdateFeed.prototype.handleJob = function() {
+		UserHistory.insert({title: this.params.feed.title});
+		console.log('bhak saala');
+		return console.log('Ho gaya kya?');
+	};
+
+	return UpdateFeed;
+
+})(Job);
+
 feedUpdate = function() {
-	
+
 	// Get all the feeds from the `Feeds` Collection
 	var feeds = Feeds.find({});
 
-	var fetchMeta = _.once(function(meta, origMetaDate) {
+	feeds.forEach(function(feed) {
+		Job.push(new UpdateFeed({
+			feed: feed,
+		}));
+	});
+
+	/*var fetchMeta = _.once(function(meta, origMetaDate) {
 		var newFeedMeta = {
 			title: meta.title,
 			description: meta.description,
@@ -179,9 +225,6 @@ feedUpdate = function() {
 			logger.error(error);
 		});
 
-
-
-
-	});
+	});*/
 
 }

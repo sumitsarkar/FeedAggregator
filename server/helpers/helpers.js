@@ -5,7 +5,7 @@ checkDuplicateFeed = function(link) {
 
 	if (!!dupFeed)
 		return dupFeed._id;
-	else 
+	else
 		return false;
 };
 
@@ -14,7 +14,7 @@ checkExistingSubcription = function(feedId) {
 		userId: Meteor.userId()
 	});
 
-	if(sub.feeds.indexOf(feedId) > -1 ) {
+	if (sub.feeds.indexOf(feedId) > -1) {
 		return true
 	} else {
 		return false
@@ -24,3 +24,4 @@ checkExistingSubcription = function(feedId) {
 isSameDate = function(date1, date2) {
 	return moment(date1).isSame(date2);
 }
+
