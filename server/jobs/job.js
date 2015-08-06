@@ -16,21 +16,74 @@ var extend = function(child, parent) {
 
 
 this.UpdateFeedJob = (function(superClass) {
-  extend(UpdateFeedJob, superClass);
+	extend(UpdateFeedJob, superClass);
 
-  function UpdateFeedJob() {
-    return UpdateFeedJob.__super__.constructor.apply(this, arguments);
-  }
+	function UpdateFeedJob() {
+		return UpdateFeedJob.__super__.constructor.apply(this, arguments);
+	}
 
-  UpdateFeedJob.setupCron = function(parser) {
-    return parser.text('every 5 seconds');
-  };
+	UpdateFeedJob.setupCron = function(parser) {
+		return parser.text('every 2 minutes');
+	};
 
-  UpdateFeedJob.prototype.handleJob = function() {
-  	feedUpdate();
-    return console.log('Job complete');
-  };
+	UpdateFeedJob.prototype.handleJob = function() {
+		feedUpdate();
+	};
 
-  return UpdateFeedJob;
+	return UpdateFeedJob;
 
 })(Job);
+
+
+this.UpdateIndividualFeedJob = (function(superClass) {
+	extend(UpdateIndividualFeedJob, superClass);
+
+	function UpdateIndividualFeedJob() {
+		return UpdateIndividualFeedJob.__super__.constructor.apply(this, arguments);
+	}
+
+	UpdateIndividualFeedJob.prototype.handleJob = function() {
+		console.log(this.params);
+		updateIndividualFeed(this.params.feed);
+	};
+
+	return UpdateIndividualFeedJob;
+
+})(Job);
+
+
+this.SlackJob = (function(superClass) {
+	extend(SlackJob, superClass);
+
+	function SlackJob() {
+		return SlackJob.__super__.constructor.apply(this, arguments);
+	}
+
+	SlackJob.prototype.handleJob = function() {
+		return HTTP.post(Meteor.settings.slack.url, {
+			data: {
+				channel: "#feedaggregator",
+				username: "The App",
+				text: this.params.text,
+				icon_url: "https://usercycle.com/img/icon.png",
+				link_names: 1
+			}
+		});
+	};
+
+	return SlackJob;
+
+})(Job);
+
+this.Slack = (function() {
+	function Slack() {}
+
+	Slack.notify = function(text) {
+		return Job.push(new SlackJob({
+			text: text
+		}));
+	};
+
+	return Slack;
+
+})();

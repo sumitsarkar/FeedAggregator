@@ -7,5 +7,7 @@ Accounts.onCreateUser(function(options, user) {
 
 	UserSubscriptions.insert(document);
 
+	Slack.notify("*" + user.services.google.email + "* just signed up");
+
 	return user;
 });
