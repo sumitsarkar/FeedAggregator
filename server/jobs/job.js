@@ -23,7 +23,7 @@ this.UpdateFeedJob = (function(superClass) {
 	}
 
 	UpdateFeedJob.setupCron = function(parser) {
-		return parser.text('every 2 minutes');
+		return parser.text('every 1 hour');
 	};
 
 	UpdateFeedJob.prototype.handleJob = function() {
@@ -43,7 +43,6 @@ this.UpdateIndividualFeedJob = (function(superClass) {
 	}
 
 	UpdateIndividualFeedJob.prototype.handleJob = function() {
-		console.log(this.params);
 		updateIndividualFeed(this.params.feed);
 	};
 

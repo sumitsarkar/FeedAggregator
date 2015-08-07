@@ -231,10 +231,8 @@ updateIndividualFeed = function(oldFeed) {
 
 				if (!oldArticle) {
 					//	Inserting the newArticle
-					console.log('Naya article');
 					FeedsArticles.insert(newArticle);
 				} else {
-					console.log('Purana article');
 					var oldArticleJson = _.omit(oldArticle, "_id");
 					// Let's diff them.
 					var diff = jsondiffpatch.diff(oldArticleJson, newArticle);
