@@ -36,5 +36,15 @@ Meteor.methods({
 		} else{
 			return {feedId: feed._id, duplicate: true};
 		}
+	},
+
+	feeds_removeFeed: function(feedId) {
+		// We'll unsubscribe the user from the feed.
+		var sub = UserSubscriptions.findOne({
+			userId: Meteor.userId()
+		});
+		if (sub.feeds.indexOf(feedId) > -1 ){
+			Meteor.call("userSubscriptions_remove", feedId);
+		}
 	}
 })

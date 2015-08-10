@@ -1,7 +1,9 @@
 Meteor.publish("userSubscriptions", function() {
 	var userId = this.userId;
 	if (userId)
-		return UserSubscriptions.find({userId: userId});
+		return UserSubscriptions.find({
+			userId: userId
+		});
 });
 
 
@@ -14,21 +16,29 @@ Meteor.publish("feeds", function() {
 	var userSubscriptionsHandle;
 
 	if (!userId)
-		return ;
-	
+		return;
+
 	function publishFeeds(feeds) {
-		var feedCursor = Feeds.find({_id: {$in: feeds}});;
+		var feedCursor = Feeds.find({
+			_id: {
+				$in: feeds
+			}
+		});
 		Mongo.Collection._publishCursor(feedCursor, sub, 'feeds');
 	}
 
 
 	// Publish feeds when user first opens the app.
-	var userSubsObject = UserSubscriptions.findOne({userId: userId});
+	var userSubsObject = UserSubscriptions.findOne({
+		userId: userId
+	});
 	if (userSubsObject.feeds)
 		publishFeeds(userSubsObject.feeds);
 
 
-	userSubscriptionsHandle = UserSubscriptions.find({userId: userId}).observeChanges({
+	userSubscriptionsHandle = UserSubscriptions.find({
+		userId: userId
+	}).observeChanges({
 		changed: function(id, fields) {
 			publishFeeds(fields.feeds);
 			sub.changed('userSubscriptions', id, fields)
@@ -36,6 +46,10 @@ Meteor.publish("feeds", function() {
 	});
 
 	sub.ready();
+
+	sub.onStop(function() {
+		userSubscriptionsHandle.stop();
+	});
 });
 
 /*
@@ -44,7 +58,11 @@ Meteor.publish("feeds", function() {
 
 Meteor.publish('feedsArticles', function(feedId) {
 	var userId = this.userId;
-	var subs = UserSubscriptions.findOne({userId: userId}).feeds;
+	var subs = UserSubscriptions.findOne({
+		userId: userId
+	}).feeds;
 	if (subs.indexOf(feedId) > -1)
-		return FeedsArticles.find({feedId: feedId});
+		return FeedsArticles.find({
+			feedId: feedId
+		});
 });

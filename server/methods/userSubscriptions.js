@@ -14,6 +14,9 @@ Meteor.methods({
 	},
 	userSubscriptions_remove: function(feedId) {
 		check(feedId, String);
+
+		// Pull the `feedId` from the `feeds` array of the document
+
 		UserSubscriptions.update({
 			userId: Meteor.userId()
 		}, {

@@ -70,6 +70,7 @@ feedParser = function(feedUrl, callback) {
 	req.setHeader('accept', 'text/html,application/xhtml+xml');
 
 	req.on('error', function(error) {
+		logger.error(error);
 		future.throw(error);
 	});
 
@@ -82,6 +83,7 @@ feedParser = function(feedUrl, callback) {
 	});
 
 	feedParser.on('error', function(error) {
+		logger.error(error);
 		future.throw(error)
 	});
 
@@ -89,6 +91,8 @@ feedParser = function(feedUrl, callback) {
 		meta = feedParser.meta;
 		stream = feedParser;
 
+
+		logger.info('Fetching meta for ' + feedUrl);
 		var result = fetchMeta(meta);
 		if (!!result.feedId) {
 			while (item = stream.read()) {
@@ -107,6 +111,7 @@ feedParser = function(feedUrl, callback) {
 				}
 
 				//	Inserting the article
+				logger.info('Inserting new article from ' + meta.link);
 				FeedsArticles.insert(article);
 			}
 		}
@@ -141,8 +146,9 @@ updateIndividualFeed = function(oldFeed) {
 	var request = Meteor.npmRequire('request');
 	var jsondiffpatch = Meteor.npmRequire('jsondiffpatch');
 
+	var metaFetchResult;
+
 	// Create a request
-	console.log(oldFeed.xmlurl);
 	var req = request(oldFeed.xmlurl, {
 		timeout: 10000,
 		pool: false
@@ -196,21 +202,21 @@ updateIndividualFeed = function(oldFeed) {
 			Feeds.update(oldFeed._id, {
 				$set: newFeedMeta
 			});
-			return true;
+			return {feedId: oldFeed._id, update: true};
 		}
 
-		return false;
+		return {feedId: oldFeed._id, update: false};
 	});
 
 	feedParser.on('readable', Meteor.bindEnvironment(function() {
 		meta = feedParser.meta;
 		stream = feedParser;
 
-		var result = fetchAndUpdateMeta(meta, oldFeed);
-		if (!!result) {
+		metaFetchResult = fetchAndUpdateMeta(meta, oldFeed);
+		if (!!metaFetchResult.update) {
 			while (item = stream.read()) {
 				var newArticle = {
-					feedId: result.feedId,
+					feedId: metaFetchResult.feedId,
 					title: item.title,
 					description: item.description,
 					summary: item.summary,
@@ -231,6 +237,7 @@ updateIndividualFeed = function(oldFeed) {
 
 				if (!oldArticle) {
 					//	Inserting the newArticle
+					logger.info('Adding new article from ' + oldFeed.link)
 					FeedsArticles.insert(newArticle);
 				} else {
 					var oldArticleJson = _.omit(oldArticle, "_id");
@@ -239,6 +246,7 @@ updateIndividualFeed = function(oldFeed) {
 
 					if (diff) {
 						// Update the oldArticle with the new newArticle
+						logger.info('Updating article with _id: ' + oldArticle._id);
 						FeedsArticles.update(oldArticle._id, {
 							$set: newArticle
 						});

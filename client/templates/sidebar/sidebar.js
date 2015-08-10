@@ -24,11 +24,10 @@ Template.sidebar.events({
 					return null;
 				}
 
-				if (!validateUrl(data.url)){
+				if (!validateUrl(data.url)) {
 					toastr.error("Please type a valid url.", "Invalid URL");
 					return null;
-				}
-				else {
+				} else {
 					Meteor.call("feeds_addFeed", data, function(err, result) {
 						if (err) {
 							toastr.error("Please type a valid url.", "Invalid URL");
@@ -46,6 +45,32 @@ Template.sidebar.events({
 		});
 	},
 
+	"click .js-removeChannel": function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		var title = $(event.target).closest('.content').text();
+		var feedId = $(event.target).closest('a.js-channelItem').prop('id');
+		console.log(feedId)
+		vex.dialog.confirm({
+			message: 'Are you absolutely sure you want to unsubscribe from the feed ' + title + ' ?',
+			callback: function(value) {
+				if (value) {
+					Meteor.call('feeds_removeFeed', feedId, function(err,result) {
+						if (err) {
+							toastr.error("Woops! Something wrong happened.")
+							return;
+						}
+
+						if (result) {
+							toastr.success('Unsubscribed successfully.');
+						}
+					});
+				}
+			}
+		});
+
+	},
+
 	"click .js-channelItem": function(event) {
 		$(".js-channelItem").siblings().removeClass('active');
 		$(event.target).closest('a.js-channelItem').addClass('active');
@@ -60,7 +85,7 @@ Template.sidebar.helpers({
 		var feedIdParam = FlowRouter.getParam("feedId");
 		if (feedIdParam === feedId) {
 			return "active"
-		} 
+		}
 		return "";
 	},
 	subscriptions: function() {
