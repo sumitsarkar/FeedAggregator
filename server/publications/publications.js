@@ -56,7 +56,7 @@ Meteor.publish("feeds", function() {
 	Publication for articles
 */
 
-Meteor.publish('feedsArticles', function(feedId) {
+Meteor.publish('feedsArticlesList', function(feedId) {
 	var userId = this.userId;
 	var subs = UserSubscriptions.findOne({
 		userId: userId
@@ -64,5 +64,21 @@ Meteor.publish('feedsArticles', function(feedId) {
 	if (subs.indexOf(feedId) > -1)
 		return FeedsArticles.find({
 			feedId: feedId
+		}, {
+			fields: {
+				feedId: 1,
+				title: 1,
+				date: 1,
+				author: 1
+			},
+			sort: {
+				date: -1
+			}
 		});
 });
+
+Meteor.publish('feedsArticle', function(feedId, articleId) {
+	return FeedsArticles.find({
+		_id: articleId
+	});
+})

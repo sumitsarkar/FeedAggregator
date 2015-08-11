@@ -1,6 +1,15 @@
+Template.articleList.onCreated(function() {
+	var self = this;
+	self.autorun(function() {
+		var feedId = FlowRouter.getParam('feedId');
+		self.subscribe('feedsArticlesList', feedId);
+	});
+});
+
 Template.articleList.helpers({
 	getArticlesList: function() {
-		return FeedsArticles.find({}, {sort: {date: -1}});
+		var feedId = FlowRouter.getParam('feedId');
+		return FeedsArticles.find({feedId: feedId});
 	},
 
 	getDateString: function(date) {

@@ -1,3 +1,12 @@
+Template.article.onCreated(function() {
+	var self = this;
+	self.autorun(function() {
+		var feedId = FlowRouter.getParam('feedId');
+		var articleId = FlowRouter.getParam('articleId')
+		self.subscribe('feedsArticle', feedId, articleId);
+	});
+});
+
 Template.article.helpers({
 	getArticle: function() {
 		//var feedId = FlowRouter.params('feedId');
