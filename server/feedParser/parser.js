@@ -131,7 +131,7 @@ The feedUpdate will itself be a job which will in trun add more jobs to the job 
 
 feedUpdate = function() {
 	// Get all the feeds from the `Feeds` Collection
-	var feeds = Feeds.find({});
+	var feeds = Feeds.find({}).fetch();
 
 	feeds.forEach(function(feed) {
 		Job.push(new UpdateIndividualFeedJob({
@@ -237,7 +237,7 @@ updateIndividualFeed = function(oldFeed) {
 
 				if (!oldArticle) {
 					//	Inserting the newArticle
-					logger.info('Adding new article from ' + oldFeed.link)
+					logger.info('Adding new article from ' + oldFeed.link);
 					FeedsArticles.insert(newArticle);
 				} else {
 					var oldArticleJson = _.omit(oldArticle, "_id");
