@@ -23,7 +23,7 @@ this.UpdateFeedJob = (function(superClass) {
 	}
 
 	UpdateFeedJob.setupCron = function(parser) {
-		return parser.text('every 1 minute');
+		return parser.text('every 20 minutes');
 	};
 
 	UpdateFeedJob.prototype.handleJob = function() {

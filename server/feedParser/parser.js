@@ -8,6 +8,7 @@ feedParser = function(feedUrl, callback) {
 	var feedId;
 
 	var fetchMeta = _.once(function(meta) {
+		logger.info('Fetching meta for ' + meta.xmlurl);
 		var newFeedMeta = {
 			title: meta.title,
 			description: meta.description,
@@ -92,7 +93,7 @@ feedParser = function(feedUrl, callback) {
 		stream = feedParser;
 
 
-		logger.info('Fetching meta for ' + feedUrl);
+		
 		var result = fetchMeta(meta);
 		if (!!result.feedId) {
 			while (item = stream.read()) {
@@ -216,7 +217,6 @@ updateIndividualFeed = function(oldFeed) {
 		if (!!metaFetchResult.update) {
 			while (item = stream.read()) {
 				var newArticle = {
-					feedId: metaFetchResult.feedId,
 					title: item.title,
 					description: item.description,
 					summary: item.summary,
@@ -227,7 +227,7 @@ updateIndividualFeed = function(oldFeed) {
 					pubdate: item.pubdate,
 					author: item.author,
 					guid: item.guid
-				}
+				};
 
 				// Find existing article by using guid. I don't know if there's any better way :(
 
@@ -239,18 +239,22 @@ updateIndividualFeed = function(oldFeed) {
 					//	Inserting the newArticle
 					logger.info('Adding new article from ' + oldFeed.link);
 					FeedsArticles.insert(newArticle);
-				} else {
-					var oldArticleJson = _.omit(oldArticle, "_id");
-					// Let's diff them.
-					var diff = jsondiffpatch.diff(oldArticleJson, newArticle);
+				} else if (!moment(oldArticle.date).isSame(newArticle.date)) {
+					// If update dates are different, find a diff between the jsons and update accordingly.
+					
+					// var oldArticleJson = _.omit(oldArticle, "_id", "feedId");
 
-					if (diff) {
-						// Update the oldArticle with the new newArticle
-						logger.info('Updating article with _id: ' + oldArticle._id);
-						FeedsArticles.update(oldArticle._id, {
-							$set: newArticle
-						});
-					}
+					// Let's not diff them for now and see how the performance is.
+
+					// Update the oldArticle with the new newArticle
+					logger.info('Updating article with _id: ' + oldArticle._id);
+
+					newArticle["feedId"] = metaFetchResult.feedId;
+						
+					FeedsArticles.update(oldArticle._id, {
+						$set: newArticle
+					});
+					
 				}
 			}
 		}
