@@ -147,8 +147,6 @@ updateIndividualFeed = function(oldFeed) {
 	var request = Meteor.npmRequire('request');
 	var jsondiffpatch = Meteor.npmRequire('jsondiffpatch');
 
-	var metaFetchResult;
-
 	// Create a request
 	var req = request(oldFeed.xmlurl, {
 		timeout: 10000,
@@ -213,7 +211,7 @@ updateIndividualFeed = function(oldFeed) {
 		meta = feedParser.meta;
 		stream = feedParser;
 
-		metaFetchResult = fetchAndUpdateMeta(meta, oldFeed);
+		var metaFetchResult = fetchAndUpdateMeta(meta, oldFeed);
 		if (!!metaFetchResult.update) {
 			while (item = stream.read()) {
 				var newArticle = {
